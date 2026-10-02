@@ -45,6 +45,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#f6f1e9",
+  // a printed card on ivory: never let the browser's auto dark mode repaint it
+  colorScheme: "only light",
   width: "device-width",
   initialScale: 1,
 };

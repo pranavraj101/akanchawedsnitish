@@ -8,6 +8,7 @@
    ===================================================================== */
 
 :root {
+  color-scheme: only light;
   --paper:     #f6f1e9;
   --ivory:     #fffdf9;
   --ink:       #5b4636;
@@ -311,7 +312,8 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--gold); outlin
    ===================================================================== */
 @media (orientation: portrait) {
   :root { --arch-w: min(90vw, 540px, 58vh); }
-  .flora-bottom { width: 52vw; bottom: -3%; }
+  .flora-bottom { width: min(52vw, 34vh); bottom: -3%; }
+  .couple-lg { height: min(calc(var(--u) * 92), 40vh); }
   .copy { padding-bottom: clamp(90px, 17vh, 190px); }
   .topbar .mono { display: none; }
 }
