@@ -51,7 +51,7 @@ const Kalash = () => (
 const Diya = () => (
   <Svg>
     <path d="M32 8 C 38 16, 38 24, 32 28 C 26 24, 26 16, 32 8 Z" />
-    <path d="M32 16 C 34 20, 34 23, 32 25 C 30 23, 30 20, 32 16 Z" fill="currentColor" opacity=".35" />
+    <path className="flame" d="M32 16 C 34 20, 34 23, 32 25 C 30 23, 30 20, 32 16 Z" fill="currentColor" opacity=".35" />
     <path d="M10 36 C 14 48, 24 52, 32 52 C 40 52, 50 48, 54 36 L 46 36 C 42 40, 22 40, 18 36 Z" />
     <path d="M10 36 C 22 32, 42 32, 54 36" />
     <path d="M26 52 L 24 58 L 40 58 L 38 52" />
@@ -90,3 +90,12 @@ export const Flourish = () => (
     <circle cx="194" cy="10" r="1.4" fill="currentColor" />
   </Svg>
 );
+
+/** A four-pointed gold glint that twinkles in place. */
+export function Spark({ style, className = "" }: { style?: React.CSSProperties; className?: string }) {
+  return (
+    <svg viewBox="-10 -10 20 20" className={`spark ${className}`} style={style} aria-hidden="true">
+      <path d="M0 -10 C 1 -3, 3 -1, 10 0 C 3 1, 1 3, 0 10 C -1 3, -3 1, -10 0 C -3 -1, -1 -3, 0 -10 Z" />
+    </svg>
+  );
+}

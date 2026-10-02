@@ -25,7 +25,8 @@
   --scriptf: var(--font-script), 'Snell Roundhand', cursive;
   --hindif:  var(--font-hindi), 'Noto Serif Devanagari', 'Kohinoor Devanagari', serif;
 
-  --foil: linear-gradient(100deg, #8a6738 0%, #b8935a 22%, #e7cf9c 42%, #f6e7c4 50%, #e7cf9c 58%, #b8935a 78%, #8a6738 100%);
+  /* gold with one bright band; sliding it across the text reads as a glint */
+  --foil: linear-gradient(100deg, #9a7642 0%, #b8935a 20%, #c4a067 38%, #f3e2bb 47%, #fff6df 50%, #f3e2bb 53%, #c4a067 62%, #b8935a 80%, #9a7642 100%);
 
   /* the arch every card lives in */
   --arch-w:   min(88vw, 540px, 62vh);
@@ -59,12 +60,22 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--gold); outlin
 .hindi { font-family: var(--hindif); }
 .script {
   font-family: var(--scriptf); font-weight: 400; line-height: 1.15;
-  background: var(--foil); background-size: 240% 100%;
+  background: var(--foil); background-size: 320% 100%; background-position: 100% 50%;
   -webkit-background-clip: text; background-clip: text; color: transparent;
-  animation: shimmer 9s ease-in-out infinite alternate;
+  animation: glint 7s ease-in-out 2.4s infinite;
   padding: .1em .25em .18em;
 }
-@keyframes shimmer { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+@keyframes glint { 0% { background-position: 100% 50%; } 30%, 100% { background-position: 0% 50%; } }
+
+/* four-point gold glints */
+.spark { position: absolute; width: 12px; height: auto; fill: var(--gold-soft); overflow: visible; translate: -50% -50%; filter: drop-shadow(0 0 4px rgba(246, 226, 180, .9)); animation: twinkle 3.6s ease-in-out infinite; pointer-events: none; }
+@keyframes twinkle { 0%, 100% { opacity: .15; scale: .55; rotate: 0deg; } 45% { opacity: 1; scale: 1; rotate: 45deg; } 60% { opacity: .9; scale: .9; } }
+.names .spark.s1 { left: 12%; top: 22%; width: 15px; }
+.names .spark.s2 { left: 90%; top: 46%; width: 11px; animation-delay: 1.2s; }
+.names .spark.s3 { left: 30%; top: 92%; width: 9px; animation-delay: 2.3s; }
+.closing-wrap { position: relative; }
+.closing-wrap .spark.s1 { left: 4%; top: 18%; width: 13px; }
+.closing-wrap .spark.s3 { left: 94%; top: 74%; width: 10px; animation-delay: 1.6s; }
 .orn { display: block; width: 100%; height: 100%; color: var(--gold); overflow: visible; }
 
 /* =====================================================================
@@ -89,6 +100,17 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--gold); outlin
   background: linear-gradient(180deg, rgba(255, 253, 249, .92), rgba(255, 253, 249, .7) 60%, rgba(255, 253, 249, .55));
   box-shadow: inset 0 0 40px rgba(232, 214, 190, .45);
 }
+
+.arch .spark { animation-duration: 4.2s; }
+
+/* drifting out-of-focus lights */
+.bokeh { position: absolute; inset: 0; pointer-events: none; }
+.bokeh i { position: absolute; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(255, 238, 205, .75), rgba(255, 238, 205, 0) 68%); animation: float-light 24s ease-in-out infinite alternate; }
+.bokeh i:nth-child(even) { background: radial-gradient(circle, rgba(244, 205, 200, .6), rgba(244, 205, 200, 0) 68%); animation-duration: 30s; }
+@keyframes float-light { 0% { translate: 0 0; opacity: .5; } 50% { opacity: 1; } 100% { translate: 6vw -8vh; opacity: .6; } }
+
+/* the light leak that crosses the frame on every cut */
+.sweep { position: absolute; inset: -10% -30%; z-index: 5; pointer-events: none; opacity: 0; background: linear-gradient(105deg, transparent 38%, rgba(255, 241, 214, .55) 47%, rgba(255, 250, 238, .75) 50%, rgba(255, 241, 214, .55) 53%, transparent 62%); }
 
 .scene { position: absolute; inset: 0; visibility: hidden; opacity: 0; }
 .scene:not(.is-current) * { animation-play-state: paused !important; }
@@ -116,6 +138,8 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--gold); outlin
   mask-image: linear-gradient(180deg, #000 70%, transparent 98%);
   pointer-events: none;
 }
+.couple { animation: drift-up 8s ease-in-out infinite alternate; }
+@keyframes drift-up { from { translate: 0 0; } to { translate: 0 -7px; } }
 .couple-lg { height: min(calc(var(--u) * 92), 44vh); margin-top: calc(var(--u) * 1); }
 .couple-sm { height: min(calc(var(--u) * 48), 22vh); }
 .hero .names { display: flex; flex-direction: column; align-items: center; margin-top: calc(var(--u) * -16); position: relative; }
@@ -210,6 +234,10 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--gold); outlin
 }
 .gseal:hover { transform: scale(1.05) rotate(-3deg); }
 .gseal svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.gseal-ring, .gseal-ring::after { position: absolute; inset: -6%; border-radius: 50%; border: 1px solid var(--gold); animation: ripple 2.8s ease-out infinite; pointer-events: none; }
+.gseal-ring::after { content: ""; inset: 0; animation-delay: 1.4s; }
+@keyframes ripple { 0% { scale: .9; opacity: .9; } 100% { scale: 1.7; opacity: 0; } }
+.gate-flash { position: absolute; left: 50%; top: 44%; width: 70vmin; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; opacity: 0; pointer-events: none; z-index: 7; background: radial-gradient(circle, rgba(255, 249, 235, 1), rgba(250, 230, 190, .6) 35%, rgba(250, 230, 190, 0) 70%); }
 .gseal-lotus {
   position: relative; width: 46%; height: auto; overflow: visible;
   fill: none; stroke: #ecd7ae; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
@@ -271,10 +299,12 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--gold); outlin
 .dressing { position: fixed; inset: 0; z-index: 4; pointer-events: none; overflow: hidden; }
 .flora { position: absolute; display: block; height: auto; user-select: none; }
 .flora-bottom { bottom: -4%; width: clamp(220px, calc((100vw - var(--arch-w)) / 2 + var(--arch-w) * .22), 640px); }
-.flora-bottom.left  { left: 0; }
-.flora-bottom.right { right: 0; }
+.flora-bottom.left  { left: 0;  transform-origin: 0% 100%;   animation: sway 8s ease-in-out infinite; }
+.flora-bottom.right { right: 0; transform-origin: 100% 100%; animation: sway 9s ease-in-out -3s infinite reverse; }
 .flora-corner { top: 0; right: 0; width: min(58vw, 460px); transform-origin: 100% 0; animation: sway 9s ease-in-out infinite; }
 @keyframes sway { 0%, 100% { rotate: 0deg; } 50% { rotate: -1.2deg; } }
+.orn .flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flicker 1.2s ease-in-out infinite alternate; }
+@keyframes flicker { from { scale: 1 1; opacity: .3; } to { scale: .85 1.2; opacity: .6; } }
 
 /* =====================================================================
    responsive
@@ -286,12 +316,17 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--gold); outlin
   .topbar .mono { display: none; }
 }
 @media (orientation: landscape) {
-  .couple-lg { height: min(calc(var(--u) * 80), 36vh); }
+  .couple { animation: drift-up 8s ease-in-out infinite alternate; }
+@keyframes drift-up { from { translate: 0 0; } to { translate: 0 -7px; } }
+.couple-lg { height: min(calc(var(--u) * 80), 36vh); }
 }
 @media (max-height: 700px) and (orientation: landscape) {
   .copy { padding-bottom: 90px; }
-  .couple-lg { height: 40vh; }
+  .couple { animation: drift-up 8s ease-in-out infinite alternate; }
+@keyframes drift-up { from { translate: 0 0; } to { translate: 0 -7px; } }
+.couple-lg { height: 40vh; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .script, .gseal, .gate-hint, .flora-corner, .sound.on .bars i { animation: none; }
+  .script, .gseal, .gate-hint, .flora-corner, .flora-bottom, .sound.on .bars i, .spark, .bokeh i, .couple, .gseal-ring, .gseal-ring::after, .orn .flame { animation: none; }
+  .spark { opacity: .8; }
 }

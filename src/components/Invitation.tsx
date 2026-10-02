@@ -2,19 +2,16 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
+import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { wedding } from "@/data/wedding";
 import { buildScenes } from "@/components/scenes";
 import Music from "@/components/Music";
+import { Spark } from "@/components/ornaments";
 
 const SCENE_SECONDS = 9;
 const gust = () => window.dispatchEvent(new Event("shaadi:gust"));
+gsap.registerPlugin(DrawSVGPlugin);
 
-/**
- * The film. An ivory gatefold sealed with wax opens onto a gold arch; inside
- * it the invitation plays card by card like a video invite: each one
- * auto-advances, drifts gently under the pointer and dissolves into the next.
- * Tap, swipe, scroll or use the arrows to take control. No forms anywhere.
- */
 /** A wax seal's softly pooled edge: gentle lobes joined by smooth curves. */
 const SEAL_EDGE = (() => {
   const n = 14;
@@ -27,6 +24,22 @@ const SEAL_EDGE = (() => {
   return `${d} Z`;
 })();
 
+/** Gold glints around the arch: [left %, top %, size px, delay s]. */
+const STARS: [number, number, number, number][] = [
+  [8, 22, 14, 0], [93, 16, 10, 1.3], [50, -1.2, 16, 2.1], [24, 5, 9, 3.2], [77, 6, 12, 0.7],
+  [-1.5, 48, 11, 2.6], [101, 40, 13, 1.8], [-1, 72, 9, 3.8], [101, 66, 10, 0.4],
+];
+/** Soft out-of-focus lights drifting behind the arch: [left %, top %, size vmin, delay s]. */
+const BOKEH: [number, number, number, number][] = [
+  [10, 20, 18, 0], [82, 14, 24, -4], [70, 62, 16, -8], [18, 70, 22, -2], [45, 8, 12, -6], [90, 82, 14, -10], [4, 42, 10, -12],
+];
+
+/**
+ * The film. An ivory gatefold sealed with wax opens onto a gold arch; inside
+ * it the invitation plays card by card like a video invite: each one
+ * auto-advances, drifts gently under the pointer and dissolves into the next.
+ * Tap, swipe, scroll or use the arrows to take control. No forms anywhere.
+ */
 export default function Invitation() {
   const scenes = useMemo(buildScenes, []);
   const N = scenes.length;
@@ -55,9 +68,12 @@ export default function Invitation() {
       gsap.from(".gseal", { scale: 0.6, opacity: 0, rotate: -12, duration: 1.4, delay: 0.6, ease: "back.out(1.6)" });
       gsap.from(".gate-copy > *", { y: 16, opacity: 0, duration: 1.1, delay: 0.9, stagger: 0.14, ease: "power3.out" });
     }, rootRef);
+    // the florals bloom open from their corners, softly coming into focus
     const dressing = gsap.context(() => {
-      gsap.from(".flora-bottom", { y: 80, opacity: 0, duration: 2.2, ease: "power3.out" });
-      gsap.from(".flora-corner", { x: 60, y: -60, opacity: 0, duration: 2.2, delay: 0.2, ease: "power3.out" });
+      const bloom = { opacity: 0, scale: 0.55, filter: "blur(10px)", duration: 2.8, ease: "expo.out", clearProps: "filter" };
+      gsap.from(".flora-bottom.left", { ...bloom, rotation: -14, transformOrigin: "0% 100%" });
+      gsap.from(".flora-bottom.right", { ...bloom, rotation: 14, transformOrigin: "100% 100%", delay: 0.15 });
+      gsap.from(".flora-corner", { ...bloom, rotation: 10, transformOrigin: "100% 0%", delay: 0.35 });
     });
     return () => { ctx.revert(); dressing.revert(); };
   }, []);
@@ -103,10 +119,27 @@ export default function Invitation() {
   const enter = (tl: gsap.core.Timeline, el: HTMLElement, at: number) => {
     if (reduced.current) return;
     const copy = el.querySelectorAll("[data-in]");
-    if (copy.length) tl.from(copy, { y: 18, opacity: 0, filter: "blur(6px)", duration: 1.1, stagger: 0.1, ease: "power3.out", clearProps: "filter" }, at + 0.3);
+    if (copy.length) tl.from(copy, { y: 18, opacity: 0, filter: "blur(8px)", duration: 1.4, stagger: 0.12, ease: "power3.out", clearProps: "filter" }, at + 0.3);
+    // gold line-art draws itself stroke by stroke
+    const strokes = el.querySelectorAll(".orn path, .orn circle, .orn ellipse, .orn rect");
+    if (strokes.length) tl.fromTo(strokes, { drawSVG: "50% 50%" }, { drawSVG: "0% 100%", duration: 1.6, stagger: 0.03, ease: "power2.inOut" }, at + 0.45);
+    const couple = el.querySelectorAll(".couple");
+    if (couple.length) tl.fromTo(couple, { scale: 1.08, y: 20 }, { scale: 1, y: 0, duration: 2.6, ease: "power3.out" }, at + 0.2);
     // script names are written on left to right, like ink from a nib
     const names = el.querySelectorAll(".name");
     if (names.length) tl.fromTo(names, { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.8, stagger: 0.35, ease: "power2.inOut", clearProps: "clipPath" }, at + 0.6);
+    const stars = el.querySelectorAll(".spark");
+    if (stars.length) tl.fromTo(stars, { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.9, stagger: 0.25, ease: "back.out(3)" }, at + 1.8);
+  };
+
+  /** A warm light leak across the frame and a breath of wind through the flowers. */
+  const flourishCut = (tl: gsap.core.Timeline, at: number) => {
+    if (reduced.current) return;
+    tl.fromTo(".sweep", { xPercent: -120, opacity: 0 }, { xPercent: 120, opacity: 1, duration: 1.6, ease: "power2.inOut" }, at)
+      .to(".sweep", { opacity: 0, duration: 0.4 }, at + 1.2);
+    tl.to(".flora-bottom.left", { rotation: 2.5, duration: 0.7, ease: "sine.out", yoyo: true, repeat: 1 }, at)
+      .to(".flora-bottom.right", { rotation: -2.5, duration: 0.7, ease: "sine.out", yoyo: true, repeat: 1 }, at + 0.08)
+      .to(".flora-corner", { rotation: -2, duration: 0.8, ease: "sine.out", yoyo: true, repeat: 1 }, at + 0.15);
   };
 
   /* ---------- open the gates ---------- */
@@ -114,18 +147,26 @@ export default function Invitation() {
     if (openedRef.current || busy.current) return;
     busy.current = true;
     window.dispatchEvent(new Event("shaadi:open")); // music starts on this tap
+    window.dispatchEvent(new Event("shaadi:burst"));
     gust();
     const first = sceneRefs.current[0];
     const tl = gsap.timeline({
       onComplete: () => { busy.current = false; openedRef.current = true; setOpened(true); armProgress(0); },
     });
-    tl.to(".gseal", { scale: 1.15, opacity: 0, duration: 0.7, ease: "power2.in" }, 0)
+    tl.to(".gseal", { scale: 0.9, duration: 0.18, ease: "power2.out" }, 0)
+      .to(".gseal", { scale: 1.25, opacity: 0, filter: "blur(6px)", duration: 0.7, ease: "power2.in" }, 0.18)
+      .fromTo(".gate-flash", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1.6, duration: 0.9, ease: "power2.out" }, 0.15)
+      .to(".gate-flash", { opacity: 0, duration: 1.2, ease: "power2.in" }, 1.0)
       .to(".gate-copy", { opacity: 0, y: -10, duration: 0.5 }, 0)
       .to(".gpanel.left", { rotateY: -100, duration: 2.2, ease: "power2.inOut" }, 0.35)
       .to(".gpanel.right", { rotateY: 100, duration: 2.2, ease: "power2.inOut" }, 0.35)
       .to(gateRef.current, { opacity: 0, duration: 0.6 }, 1.9)
       .set(gateRef.current, { display: "none" })
-      .from(".arch", { opacity: 0, scale: 0.96, duration: 1.6, ease: "power2.out" }, 0.9);
+      // the arch rises out of the flowers, its gold line drawn from the ground up
+      .fromTo(".arch", { clipPath: "inset(100% -10% -2% -10%)" }, { clipPath: "inset(-10% -10% -2% -10%)", duration: 2.4, ease: "power2.inOut", clearProps: "clipPath" }, 0.8)
+      .from(".arch-inner", { opacity: 0, duration: 1.6, ease: "power1.out" }, 1.6)
+      .from(".arch .spark", { scale: 0, rotation: -90, duration: 0.9, stagger: 0.12, ease: "back.out(3)" }, 2.6);
+    flourishCut(tl, 0.9);
     if (first) { gsap.set(first, { scale: 1.04 }); tl.to(first, { scale: 1, duration: 2.4, ease: "power2.out" }, 0.8); enter(tl, first, 1.1); }
   };
 
@@ -148,6 +189,7 @@ export default function Invitation() {
       .set(curEl, { visibility: "hidden", y: 0, filter: "none" })
       .set(nextEl, { visibility: "visible", opacity: 0, y: dir === 1 ? 24 : -24 }, 0.55 * D)
       .to(nextEl, { opacity: 1, y: 0, duration: 1.2 * D, ease: "power3.out" }, 0.55 * D);
+    flourishCut(tl, 0.2);
     enter(tl, nextEl, 0.5 * D);
   };
 
@@ -198,12 +240,21 @@ export default function Invitation() {
   return (
     <div className="film" ref={rootRef}>
       <div className="viewer" onClick={onStageClick} role="presentation">
-        <div className="arch" aria-hidden="true"><div className="arch-inner" /></div>
+        <div className="bokeh" aria-hidden="true">
+          {BOKEH.map(([x, y, s, d], i) => <i key={i} style={{ left: `${x}%`, top: `${y}%`, width: `${s}vmin`, animationDelay: `${d}s` }} />)}
+        </div>
+        <div className="arch" aria-hidden="true">
+          <div className="arch-inner" />
+          {STARS.map(([x, y, s, d], i) => <Spark key={i} style={{ left: `${x}%`, top: `${y}%`, width: s, animationDelay: `${d}s` }} />)}
+        </div>
         {scenes.map((s, i) => (
           <section className={`scene scene-${s.key} ${i === index ? "is-current" : ""}`} key={s.key} ref={(el) => { sceneRefs.current[i] = el; }} aria-hidden={i !== index}>
             {s.node}
           </section>
         ))}
+
+        <div className="sweep" aria-hidden="true" />
+        <div className="gate-flash" aria-hidden="true" />
 
         {/* the gatefold */}
         <div className="gate" ref={gateRef}>
@@ -216,6 +267,7 @@ export default function Invitation() {
               <p className="script gate-names">{wedding.bride.first} <span>&amp;</span> {wedding.groom.first}</p>
             </div>
             <button type="button" className="gseal" onClick={(e) => { e.stopPropagation(); open(); }} aria-label="Open the invitation">
+              <span className="gseal-ring" aria-hidden="true" />
               <svg viewBox="-100 -100 200 200" aria-hidden="true">
                 <defs>
                   <radialGradient id="wax" cx="38%" cy="32%" r="75%">

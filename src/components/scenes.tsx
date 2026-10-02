@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { wedding, calendarLink, mapsLink } from "@/data/wedding";
-import { EventIcon, Calendar, Pin, Flourish } from "@/components/ornaments";
+import { EventIcon, Calendar, Pin, Flourish, Spark } from "@/components/ornaments";
 import Countdown from "@/components/Countdown";
 
 export type Scene = { key: string; label: string; node: ReactNode };
@@ -54,6 +54,7 @@ export function buildScenes(): Scene[] {
           <span className="script name">{w.bride.first}</span>
           <span className="and">and</span>
           <span className="script name">{w.groom.first}</span>
+          <Spark className="s1" /><Spark className="s2" /><Spark className="s3" />
         </h1>
         <p className="label date-line" data-in>{w.date.display}</p>
       </Card>
@@ -121,7 +122,10 @@ export function buildScenes(): Scene[] {
         <p className="label" data-in>The pheras begin in</p>
         <div data-in><Countdown targetISO={w.date.muhuratISO} /></div>
         <p className="ev-note" data-in>Vivah muhurat · {w.date.longForm} · {w.date.muhuratLabel}</p>
-        <p className="script closing-line name" data-in>We can&apos;t wait to celebrate with you</p>
+        <div className="closing-wrap">
+          <p className="script closing-line name" data-in>We can&apos;t wait to celebrate with you</p>
+          <Spark className="s1" /><Spark className="s3" />
+        </div>
         <p className="label hashtag" data-in>{w.hashtag}</p>
         <p className="ev-note" data-in>With love, the {w.bride.parents.split(" ").pop()} &amp; {w.groom.parents.split(" ").pop()} families</p>
       </Card>

@@ -37,12 +37,13 @@ type Petal = {
   vy: number; sway: number; phase: number;
   rx: number; ry: number; rz: number;
   vrx: number; vry: number; vrz: number;
-  s: number;
+  s: number; boost: number; drift: number;
 };
 
 /**
  * Fixed full-screen canvas: rose petals drift down through a faint field of
- * gold dust. Wind follows the pointer; a page turn sends a gust through.
+ * gold dust. Wind follows the pointer; a page turn sends a gust through and
+ * opening the seal releases a shower from the top of the screen.
  */
 export default function Petals() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -84,7 +85,7 @@ export default function Petals() {
         vy: rand(0.008, 0.022), sway: rand(0.4, 1.1), phase: rand(0, Math.PI * 2),
         rx: rand(0, 6.28), ry: rand(0, 6.28), rz: rand(0, 6.28),
         vrx: rand(-0.02, 0.02), vry: rand(-0.025, 0.025), vrz: rand(-0.015, 0.015),
-        s: rand(0.55, 1.25),
+        s: rand(0.55, 1.25), boost: 0, drift: 0,
       });
       mesh.setColorAt(i, palette[i % palette.length].clone().offsetHSL(0, 0, rand(-0.06, 0.06)));
     }
@@ -115,6 +116,14 @@ export default function Petals() {
     const onGust = () => { gust = Math.min(0.3, gust + 0.18); };
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("shaadi:gust", onGust);
+    const onBurst = () => {
+      petals.forEach((p) => {
+        if (Math.random() > 0.6) return;
+        p.y = rand(15, 24); p.x = rand(-14, 14); p.z = rand(-6, 6);
+        p.boost = rand(0.06, 0.14); p.drift = rand(-0.05, 0.05);
+      });
+    };
+    window.addEventListener("shaadi:burst", onBurst);
 
     const place = (i: number, p: Petal) => {
       dummy.position.set(p.x, p.y, p.z);
@@ -129,8 +138,9 @@ export default function Petals() {
       const time = t * 0.001;
       for (let i = 0; i < COUNT; i++) {
         const p = petals[i];
-        p.y -= p.vy + gust * 0.6;
-        p.x += Math.sin(time * p.sway + p.phase) * 0.012 + windX * 0.01 + gust * 0.08;
+        p.y -= p.vy + p.boost + gust * 0.6;
+        p.x += Math.sin(time * p.sway + p.phase) * 0.012 + windX * 0.01 + gust * 0.08 + p.drift;
+        p.boost *= 0.992; p.drift *= 0.99;
         p.rx += p.vrx + gust * 0.1;
         p.ry += p.vry;
         p.rz += p.vrz + Math.cos(time * p.sway + p.phase) * 0.004;
@@ -162,6 +172,7 @@ export default function Petals() {
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("shaadi:gust", onGust);
+      window.removeEventListener("shaadi:burst", onBurst);
       window.removeEventListener("resize", onResize);
       geo.dispose(); mat.dispose(); sgeo.dispose(); smat.dispose();
       renderer.dispose();
