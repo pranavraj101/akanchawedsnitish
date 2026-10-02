@@ -4,18 +4,29 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { wedding } from "@/data/wedding";
 import { buildScenes } from "@/components/scenes";
-import { GatePanel, Elephant } from "@/components/Scenery";
 import Music from "@/components/Music";
 
 const SCENE_SECONDS = 9;
 const gust = () => window.dispatchEvent(new Event("shaadi:gust"));
 
 /**
- * The film. Ornate gates open onto a sequence of full-screen illustrated
- * scenes that play like a video invite: each one auto-advances, layers drift
- * in parallax under the pointer, and the camera pushes through on every cut.
+ * The film. An ivory gatefold sealed with wax opens onto a gold arch; inside
+ * it the invitation plays card by card like a video invite: each one
+ * auto-advances, drifts gently under the pointer and dissolves into the next.
  * Tap, swipe, scroll or use the arrows to take control. No forms anywhere.
  */
+/** A wax seal's softly pooled edge: gentle lobes joined by smooth curves. */
+const SEAL_EDGE = (() => {
+  const n = 14;
+  const pt = (k: number, r: number) => {
+    const a = (k / n) * Math.PI * 2;
+    return `${(Math.cos(a) * r).toFixed(1)} ${(Math.sin(a) * r).toFixed(1)}`;
+  };
+  let d = `M${pt(0, 86)}`;
+  for (let i = 0; i < n; i++) d += ` Q ${pt(i + 0.5, 95 + (i % 3) * 1.5)} ${pt(i + 1, 86)}`;
+  return `${d} Z`;
+})();
+
 export default function Invitation() {
   const scenes = useMemo(buildScenes, []);
   const N = scenes.length;
@@ -40,15 +51,13 @@ export default function Invitation() {
     sceneRefs.current.forEach((el, i) => el && gsap.set(el, { visibility: i === 0 ? "visible" : "hidden", opacity: i === 0 ? 1 : 0 }));
     if (reduced.current) return;
     const ctx = gsap.context(() => {
-      gsap.from(".gpanel", { xPercent: (i) => (i === 0 ? -100 : 100), duration: 1.6, ease: "power3.out" });
-      gsap.from(".gate-ele", { scale: 0.7, opacity: 0, duration: 1.4, delay: 0.7, stagger: 0.15, ease: "back.out(1.5)", transformOrigin: "50% 100%" });
-      gsap.from(".gseal", { scale: 0.4, opacity: 0, rotate: -30, duration: 1.3, delay: 1.1, ease: "back.out(1.7)" });
-      gsap.from(".gate-copy > *", { y: 20, opacity: 0, duration: 0.9, delay: 1.5, stagger: 0.12 });
-      gsap.to(".gseal .ring", { rotate: 360, duration: 80, repeat: -1, ease: "none" });
+      gsap.from(".gpanel", { opacity: 0, duration: 1.4, ease: "power2.out" });
+      gsap.from(".gseal", { scale: 0.6, opacity: 0, rotate: -12, duration: 1.4, delay: 0.6, ease: "back.out(1.6)" });
+      gsap.from(".gate-copy > *", { y: 16, opacity: 0, duration: 1.1, delay: 0.9, stagger: 0.14, ease: "power3.out" });
     }, rootRef);
     const dressing = gsap.context(() => {
-      if (document.querySelector(".toran")) gsap.from(".toran", { y: -140, opacity: 0, duration: 1.6, ease: "power2.out" });
-      if (document.querySelector(".garland")) gsap.from(".garland", { y: -300, opacity: 0, duration: 1.8, delay: 0.3, stagger: 0.15, ease: "power3.out" });
+      gsap.from(".flora-bottom", { y: 80, opacity: 0, duration: 2.2, ease: "power3.out" });
+      gsap.from(".flora-corner", { x: 60, y: -60, opacity: 0, duration: 2.2, delay: 0.2, ease: "power3.out" });
     });
     return () => { ctx.revert(); dressing.revert(); };
   }, []);
@@ -93,17 +102,11 @@ export default function Invitation() {
   /* ---------- animate a scene's pieces in ---------- */
   const enter = (tl: gsap.core.Timeline, el: HTMLElement, at: number) => {
     if (reduced.current) return;
-    const layers = el.querySelectorAll<HTMLElement>(".layer");
-    layers.forEach((layer, i) => {
-      const depth = parseFloat(layer.dataset.depth || "0");
-      tl.from(layer, { y: 40 + depth * 160, opacity: 0, duration: 1.3, ease: "power3.out" }, at + i * 0.07);
-    });
     const copy = el.querySelectorAll("[data-in]");
-    if (copy.length) tl.from(copy, { y: 30, opacity: 0, duration: 0.9, stagger: 0.09, ease: "power3.out" }, at + 0.45);
-    const glyphs = el.querySelectorAll("[data-m]");
-    if (glyphs.length) tl.from(glyphs, { scale: 0.5, opacity: 0, transformOrigin: "50% 50%", duration: 1, stagger: 0.1, ease: "back.out(1.7)" }, at + 0.6);
-    const chars = el.querySelectorAll(".name .ch");
-    if (chars.length) tl.from(chars, { opacity: 0, rotateX: -90, y: 30, transformOrigin: "50% 100%", stagger: 0.045, duration: 0.9, ease: "back.out(1.4)" }, at + 0.8);
+    if (copy.length) tl.from(copy, { y: 18, opacity: 0, filter: "blur(6px)", duration: 1.1, stagger: 0.1, ease: "power3.out", clearProps: "filter" }, at + 0.3);
+    // script names are written on left to right, like ink from a nib
+    const names = el.querySelectorAll(".name");
+    if (names.length) tl.fromTo(names, { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.8, stagger: 0.35, ease: "power2.inOut", clearProps: "clipPath" }, at + 0.6);
   };
 
   /* ---------- open the gates ---------- */
@@ -116,13 +119,14 @@ export default function Invitation() {
     const tl = gsap.timeline({
       onComplete: () => { busy.current = false; openedRef.current = true; setOpened(true); armProgress(0); },
     });
-    tl.to(".gseal", { scale: 0.3, opacity: 0, duration: 0.6, ease: "power2.in" }, 0)
-      .to(".gate-copy", { opacity: 0, duration: 0.4 }, 0)
-      .to(".gpanel.left", { rotateY: -108, duration: 2.1, ease: "power2.inOut" }, 0.3)
-      .to(".gpanel.right", { rotateY: 108, duration: 2.1, ease: "power2.inOut" }, 0.3)
-      .to(gateRef.current, { opacity: 0, duration: 0.5 }, 2.0)
-      .set(gateRef.current, { display: "none" });
-    if (first) { gsap.set(first, { scale: 1.12 }); tl.to(first, { scale: 1, duration: 2.4, ease: "power2.out" }, 0.6); enter(tl, first, 1.0); }
+    tl.to(".gseal", { scale: 1.15, opacity: 0, duration: 0.7, ease: "power2.in" }, 0)
+      .to(".gate-copy", { opacity: 0, y: -10, duration: 0.5 }, 0)
+      .to(".gpanel.left", { rotateY: -100, duration: 2.2, ease: "power2.inOut" }, 0.35)
+      .to(".gpanel.right", { rotateY: 100, duration: 2.2, ease: "power2.inOut" }, 0.35)
+      .to(gateRef.current, { opacity: 0, duration: 0.6 }, 1.9)
+      .set(gateRef.current, { display: "none" })
+      .from(".arch", { opacity: 0, scale: 0.96, duration: 1.6, ease: "power2.out" }, 0.9);
+    if (first) { gsap.set(first, { scale: 1.04 }); tl.to(first, { scale: 1, duration: 2.4, ease: "power2.out" }, 0.8); enter(tl, first, 1.1); }
   };
 
   /* ---------- cut to another scene ---------- */
@@ -140,10 +144,10 @@ export default function Invitation() {
     const tl = gsap.timeline({
       onComplete: () => { busy.current = false; indexRef.current = next; setIndex(next); armProgress(next); },
     });
-    tl.to(curEl, { scale: dir === 1 ? 1.14 : 0.9, opacity: 0, duration: 0.9 * D, ease: "power2.in" }, 0)
-      .set(curEl, { visibility: "hidden", scale: 1 })
-      .set(nextEl, { visibility: "visible", opacity: 0, scale: dir === 1 ? 0.9 : 1.12 }, 0.45 * D)
-      .to(nextEl, { opacity: 1, scale: 1, duration: 1.3 * D, ease: "power3.out" }, 0.45 * D);
+    tl.to(curEl, { y: dir === 1 ? -24 : 24, opacity: 0, filter: "blur(4px)", duration: 0.8 * D, ease: "power2.in" }, 0)
+      .set(curEl, { visibility: "hidden", y: 0, filter: "none" })
+      .set(nextEl, { visibility: "visible", opacity: 0, y: dir === 1 ? 24 : -24 }, 0.55 * D)
+      .to(nextEl, { opacity: 1, y: 0, duration: 1.2 * D, ease: "power3.out" }, 0.55 * D);
     enter(tl, nextEl, 0.5 * D);
   };
 
@@ -194,43 +198,50 @@ export default function Invitation() {
   return (
     <div className="film" ref={rootRef}>
       <div className="viewer" onClick={onStageClick} role="presentation">
+        <div className="arch" aria-hidden="true"><div className="arch-inner" /></div>
         {scenes.map((s, i) => (
-          <section className={`scene bg-${s.bg} ${i === index ? "is-current" : ""}`} key={s.key} ref={(el) => { sceneRefs.current[i] = el; }} aria-hidden={i !== index}>
+          <section className={`scene scene-${s.key} ${i === index ? "is-current" : ""}`} key={s.key} ref={(el) => { sceneRefs.current[i] = el; }} aria-hidden={i !== index}>
             {s.node}
           </section>
         ))}
 
-        {/* the gates */}
+        {/* the gatefold */}
         <div className="gate" ref={gateRef}>
-          <div className="gpanel left">
-            <GatePanel side="left" />
-            <div className="gate-ele"><Elephant /></div>
-          </div>
-          <div className="gpanel right">
-            <GatePanel side="right" />
-            <div className="gate-ele flip"><Elephant /></div>
-          </div>
+          <div className="gpanel left"><span className="gpanel-arch" /></div>
+          <div className="gpanel right"><span className="gpanel-arch" /></div>
           <div className="gate-center">
             <div className="gate-copy">
               <p className="hindi gate-hindi">शुभ विवाह</p>
-              <p className="gate-names">{wedding.bride.first} &amp; {wedding.groom.first}</p>
+              <p className="label">The wedding of</p>
+              <p className="script gate-names">{wedding.bride.first} <span>&amp;</span> {wedding.groom.first}</p>
             </div>
             <button type="button" className="gseal" onClick={(e) => { e.stopPropagation(); open(); }} aria-label="Open the invitation">
-              <svg viewBox="-100 -100 200 200" className="ring" aria-hidden="true">
-                {Array.from({ length: 24 }, (_, i) => <path key={i} d="M0 -62 C 12 -76 12 -90 0 -98 C -12 -90 -12 -76 0 -62 Z" fill={i % 2 ? "#e23a78" : "#ff8a2a"} stroke="#4a1030" strokeWidth="1.4" transform={`rotate(${i * 15})`} />)}
-                <circle r="62" fill="#ffb13b" stroke="#4a1030" strokeWidth="2.5" />
-                <circle r="54" fill="none" stroke="#4a1030" strokeWidth="1" strokeDasharray="2 5" />
+              <svg viewBox="-100 -100 200 200" aria-hidden="true">
+                <defs>
+                  <radialGradient id="wax" cx="38%" cy="32%" r="75%">
+                    <stop offset="0" stopColor="#c98a86" />
+                    <stop offset=".55" stopColor="#a35d5e" />
+                    <stop offset="1" stopColor="#6f3438" />
+                  </radialGradient>
+                </defs>
+                <path d={SEAL_EDGE} fill="url(#wax)" />
+                <circle r="66" fill="none" stroke="#5d2a2e" strokeOpacity=".45" strokeWidth="3" />
+                <circle r="62" fill="none" stroke="#e6c9a0" strokeOpacity=".55" strokeWidth="1" strokeDasharray="1.5 4" />
               </svg>
-              <span className="gseal-mono">{wedding.monogram.replace(" & ", "")}</span>
+              <svg viewBox="-40 -40 80 80" className="gseal-lotus" aria-hidden="true">
+                {[-56, -28, 0, 28, 56].map((r) => <path key={r} d="M0 14 C -9 2, -7 -14, 0 -26 C 7 -14, 9 2, 0 14 Z" transform={`rotate(${r} 0 14)`} />)}
+                <path d="M-26 18 Q 0 24 26 18" />
+                <circle cx="0" cy="-32" r="2" />
+              </svg>
             </button>
-            <p className="label gate-hint gate-copy">Tap to open the invitation</p>
+            <p className="label gate-hint gate-copy">Tap the seal to open</p>
           </div>
         </div>
       </div>
 
       {/* chrome */}
       <header className="topbar">
-        <span className="mono label">{wedding.bride.first} &amp; {wedding.groom.first} · {wedding.date.display}</span>
+        <span className="mono label">{wedding.bride.first} &amp; {wedding.groom.first} &nbsp;·&nbsp; {wedding.date.display}</span>
         <Music />
       </header>
 

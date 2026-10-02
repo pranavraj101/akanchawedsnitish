@@ -21,6 +21,7 @@ export const wedding = {
     iso: "2026-12-04",
     weekday: "Friday",
     display: "04 · 12 · 2026",
+    short: "4 December 2026",
     longForm: "Friday, 4 December 2026",
     // Vivah muhurat in IST — the countdown runs to this moment.
     muhuratISO: "2026-12-04T20:45:00+05:30",
@@ -42,6 +43,7 @@ export const wedding = {
     {
       day: "02",
       month: "Dec",
+      monthLong: "December",
       hindi: "हल्दी एवं मटकोर",
       note: "Matkor — the Bihari ritual where the women of the house fetch sacred earth for the mandap.",
       title: "Haldi & Matkor",
@@ -53,6 +55,7 @@ export const wedding = {
     {
       day: "02",
       month: "Dec",
+      monthLong: "December",
       hindi: "संगीत",
       title: "Sangeet",
       motif: "peacock",
@@ -63,6 +66,7 @@ export const wedding = {
     {
       day: "03",
       month: "Dec",
+      monthLong: "December",
       hindi: "मेहंदी",
       title: "Mehendi",
       motif: "paisley",
@@ -73,6 +77,7 @@ export const wedding = {
     {
       day: "04",
       month: "Dec",
+      monthLong: "December",
       hindi: "बारात एवं विवाह",
       title: "Baraat & Vivah",
       motif: "fish",
@@ -84,6 +89,7 @@ export const wedding = {
     {
       day: "05",
       month: "Dec",
+      monthLong: "December",
       hindi: "स्वागत समारोह",
       title: "Reception",
       motif: "kalash",

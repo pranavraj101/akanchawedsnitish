@@ -1,10 +1,11 @@
 # Akansha & Nitish — Wedding Invitation
 
-A digital shaadi card built with Next.js. A sealed gatefold sits on a night
-table under a marigold toran while petals fall; a tap swings it open and the
-booklet inside turns page by page in 3D. Every page carries a generated
-Madhubani (Mithila) motif — sun, peacock, paisley, the fish-and-lotus kohbar,
-kalash — the folk art of Bihar. No forms: guests only read, tap and swipe.
+A digital shaadi card built with Next.js, in the manner of a fine printed
+invite: ivory paper, a hairline gold arch, watercolor lilies and blush roses,
+and the names in gold script. A wax-sealed gatefold opens onto the arch, and
+the invitation plays inside it card by card — the couple, the invitation,
+each ceremony, the venue and a countdown to the pheras. The couple appear as
+a faceless watercolor illustration. No forms: guests only read, tap and swipe.
 
 ## Run
 
@@ -29,12 +30,13 @@ Values marked `(placeholder)` are stand-ins waiting for the real ones.
 
 | Path | What |
 |---|---|
-| `src/components/Invitation.tsx` | The card: cover, page-turn engine, navigation, input |
-| `src/components/pages.tsx` | Page contents in reading order |
-| `src/components/motifs.tsx` | Madhubani illustrations (generated SVG) |
-| `src/components/Petals.tsx` | Three.js petal and sparkle field |
-| `src/components/Toran.tsx` | The marigold and mango-leaf garland |
+| `src/components/Invitation.tsx` | Gatefold cover, scene engine, navigation, input |
+| `src/components/scenes.tsx` | Card contents in playing order |
+| `src/components/ornaments.tsx` | Gold line-art: event icons, calendar, pin, flourish |
+| `src/components/Backdrop.tsx` | Watercolor florals framing the viewport |
+| `src/components/Petals.tsx` | Three.js falling rose petals and gold dust |
 | `src/components/Music.tsx` | Background song from `public/audio/`, tanpura fallback if it fails to load |
+| `public/art/` | The couple illustration and floral paintings (transparent WebP) |
 | `src/app/globals.css` | Palette, type and layout tokens |
 
 ## Controls

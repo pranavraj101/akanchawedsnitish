@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Marcellus, Tiro_Devanagari_Hindi } from "next/font/google";
+import { Cormorant_Garamond, Marcellus, Pinyon_Script, Tiro_Devanagari_Hindi } from "next/font/google";
 import { wedding } from "@/data/wedding";
 import "./globals.css";
 
@@ -15,6 +15,13 @@ const label = Marcellus({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-label",
+  display: "swap",
+});
+
+const script = Pinyon_Script({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-script",
   display: "swap",
 });
 
@@ -37,14 +44,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#140b2b",
+  themeColor: "#f6f1e9",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${label.variable} ${hindi.variable}`}>
+    <html lang="en" className={`${display.variable} ${label.variable} ${script.variable} ${hindi.variable}`}>
       <body>
         {children}
       </body>

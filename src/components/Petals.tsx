@@ -5,7 +5,7 @@ import * as THREE from "three";
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
 
-/** Draws a soft white petal; instances tint it marigold / saffron / rani. */
+/** Draws a soft white petal; instances tint it blush, peach and ivory. */
 function petalTexture(): THREE.Texture {
   const c = document.createElement("canvas");
   c.width = 128;
@@ -41,8 +41,8 @@ type Petal = {
 };
 
 /**
- * Fixed full-screen canvas: marigold petals drift down through a field of
- * gold sparkles. Wind follows the pointer; a page turn sends a gust through.
+ * Fixed full-screen canvas: rose petals drift down through a faint field of
+ * gold dust. Wind follows the pointer; a page turn sends a gust through.
  */
 export default function Petals() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -71,17 +71,17 @@ export default function Petals() {
     camera.position.z = 22;
 
     // --- petals
-    const COUNT = window.innerWidth < 700 ? 70 : 200;
+    const COUNT = window.innerWidth < 700 ? 36 : 90;
     const geo = new THREE.PlaneGeometry(0.55, 0.9);
-    const mat = new THREE.MeshBasicMaterial({ map: petalTexture(), transparent: true, side: THREE.DoubleSide, depthWrite: false });
+    const mat = new THREE.MeshBasicMaterial({ map: petalTexture(), transparent: true, opacity: 0.85, side: THREE.DoubleSide, depthWrite: false });
     const mesh = new THREE.InstancedMesh(geo, mat, COUNT);
     const dummy = new THREE.Object3D();
-    const palette = ["#f6a623", "#ffd54f", "#ff7a1a", "#fff8ec", "#d81b60", "#ff6f9c"].map((h) => new THREE.Color(h));
+    const palette = ["#f2c4c0", "#e8a9a6", "#f7d9c4", "#fff6ef", "#eab8a8", "#f4d6d2"].map((h) => new THREE.Color(h));
     const petals: Petal[] = [];
     for (let i = 0; i < COUNT; i++) {
       petals.push({
         x: rand(-20, 20), y: rand(-16, 18), z: rand(-12, 6),
-        vy: rand(0.012, 0.04), sway: rand(0.4, 1.1), phase: rand(0, Math.PI * 2),
+        vy: rand(0.008, 0.022), sway: rand(0.4, 1.1), phase: rand(0, Math.PI * 2),
         rx: rand(0, 6.28), ry: rand(0, 6.28), rz: rand(0, 6.28),
         vrx: rand(-0.02, 0.02), vry: rand(-0.025, 0.025), vrz: rand(-0.015, 0.015),
         s: rand(0.55, 1.25),
@@ -92,7 +92,7 @@ export default function Petals() {
     scene.add(mesh);
 
     // --- sparkles
-    const SP = window.innerWidth < 700 ? 220 : 420;
+    const SP = window.innerWidth < 700 ? 90 : 180;
     const pos = new Float32Array(SP * 3);
     for (let i = 0; i < SP; i++) {
       pos[i * 3] = rand(-24, 24);
@@ -102,8 +102,8 @@ export default function Petals() {
     const sgeo = new THREE.BufferGeometry();
     sgeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
     const smat = new THREE.PointsMaterial({
-      color: 0xf3dc8a, size: 0.13, transparent: true, opacity: 0.7,
-      blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
+      color: 0xc9a46a, size: 0.08, transparent: true, opacity: 0.5,
+      depthWrite: false, sizeAttenuation: true,
     });
     const sparkles = new THREE.Points(sgeo, smat);
     scene.add(sparkles);
@@ -142,7 +142,7 @@ export default function Petals() {
       gust *= 0.95;
       sparkles.rotation.y = time * 0.02;
       sparkles.rotation.x = Math.sin(time * 0.1) * 0.05;
-      smat.opacity = 0.45 + Math.sin(time * 1.7) * 0.2;
+      smat.opacity = 0.35 + Math.sin(time * 1.7) * 0.15;
       camera.position.x += (windX * 0.6 - camera.position.x) * 0.02;
       camera.lookAt(0, 0, 0);
       renderer.render(scene, camera);
