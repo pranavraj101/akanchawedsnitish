@@ -268,7 +268,8 @@ export default function Invitation() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/art/ganpati.webp" alt="Shri Ganesh" draggable={false} />
               </div>
-              <p className="hindi gate-mantra">॥ श्री गणेशाय नमः ॥</p>
+              <p className="hindi gate-mantra">वक्रतुण्ड महाकाय सूर्यकोटि समप्रभा।</p>
+              <p className="hindi gate-shloka">निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा॥</p>
               <p className="hindi gate-hindi">शुभ विवाह</p>
               <p className="label">The wedding of</p>
               <p className="script gate-names">{wedding.bride.first} <span>&amp;</span> {wedding.groom.first}</p>

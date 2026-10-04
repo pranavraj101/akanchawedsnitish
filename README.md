@@ -41,13 +41,12 @@ Values marked `(placeholder)` are stand-ins waiting for the real ones.
 
 ## Controls
 
-The opening page shows Shri Ganesh. Tap anywhere (or the seal) to hear the first
-two lines of the Ganesh aarti — about eight seconds — then "O Meri Laila"
-starts from its tagline and loops. The top-right button mutes it.
+The opening page shows Shri Ganesh. Tap anywhere (or the seal) to hear
+15 seconds of *Vakratunda Mahakaya* (7s–22s of the Suresh Wadkar recording)
+— then "O Meri Laila" starts at 1:13. The top-right button mutes it.
 
 ## Audio
 
-- `public/audio/ganesh-aarti.mp3` — first two lines of *Shri Ganesha Aarti* by
-  [Vikas Kumar](https://copyrightfreemusic.in/2022/09/shri-ganesha-aarti/),
-  [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
-- `public/audio/o-meri-laila.mp3` — the background song, starting at the hook.
+- `public/audio/vakratunda.mp3` — 7s to 22s only from
+  [Suresh Wadkar / Shemaroo Bhakti](https://www.youtube.com/watch?v=LNlRfBJbpDU).
+- `public/audio/o-meri-laila.mp3` — from 1:13 through the rest of the track.

@@ -2,19 +2,20 @@
 import { useEffect, useRef, useState } from "react";
 
 const SONG = "/audio/o-meri-laila.mp3";
-// First two lines of "Shri Ganesha Aarti" by Vikas Kumar, CC BY 3.0
-const BHAJAN = "/audio/ganesh-aarti.mp3";
-/** The clip is ~9s — two opening lines. Fade out just before it ends. */
-const BHAJAN_SECONDS = 8;
-/** Official Laila Majnu cut: the "O meri Laila, Laila" tagline. */
-const SONG_START = 66.8;
+// Suresh Wadkar — Vakratunda Mahakaya, 7s–22s only
+const BHAJAN = "/audio/vakratunda.mp3?v=22";
+/** That 15-second stretch, then Laila. Never play past it. */
+const BHAJAN_SECONDS = 15;
+/** Official cut: start at 1:13. */
+const SONG_START = 73;
 
 /**
- * Background music. A short Ganpati vandana plays on the opening page — from
- * the first tap if the browser holds sound back — then after eight seconds it
- * crossfades into "O Meri Laila" at the tagline, which loops from there and
- * can be muted from the top bar. If the song's MP3 can't play, the tanpura
- * synth below takes over so the film never plays silent.
+ * Background music. Fifteen seconds of Vakratunda Mahakaya (7s–22s of the
+ * Suresh Wadkar recording) play on the opening page — from the first tap if
+ * the browser holds sound back — then it crossfades into "O Meri Laila" from
+ * 1:13 through to the end, looping from that same start. The top-right
+ * button mutes it. If the song's MP3 can't play, the tanpura synth below
+ * takes over so the film never plays silent.
  */
 function createTanpura(ctx: AudioContext) {
   const master = ctx.createGain(); master.gain.value = 0;
@@ -87,20 +88,22 @@ export default function Music() {
     handedOff.current = true;
     if (handoffTimer.current !== undefined) { clearTimeout(handoffTimer.current); handoffTimer.current = undefined; }
     const b = bhajanRef.current, s = songRef.current;
-    if (b && !b.paused) fade(b, 0, 700, () => { b.pause(); b.currentTime = 0; });
+    if (b && !b.paused) fade(b, 0, 1400, () => { b.pause(); b.currentTime = 0; });
     else b?.pause();
     if (!s || s.error) { startTanpura(); return; }
     cueSong(s);
     s.volume = 0;
     s.muted = muted.current;
-    s.play().then(() => fade(s, 1, 800)).catch(startTanpura);
+    s.play().then(() => fade(s, 1, 1200)).catch(startTanpura);
     setTrack("song");
     setState(muted.current ? "muted" : "playing");
   };
 
   const scheduleHandoff = (from: HTMLAudioElement) => {
     if (handedOff.current || handoffTimer.current !== undefined) return;
-    const left = Math.max(0.35, BHAJAN_SECONDS - from.currentTime);
+    const raw = Number.isFinite(from.duration) && from.duration > 1 ? from.duration : BHAJAN_SECONDS;
+    const end = Math.min(BHAJAN_SECONDS, raw) - 0.45;
+    const left = Math.max(0.2, end - from.currentTime);
     handoffTimer.current = window.setTimeout(toSong, left * 1000);
   };
 
@@ -122,8 +125,10 @@ export default function Music() {
     const s = songRef.current;
     const onLoop = () => { if (s) { cueSong(s); s.play().catch(() => {}); } };
     const onTick = () => { if (s && handedOff.current && s.currentTime > 0 && s.currentTime < SONG_START - 0.5) cueSong(s); };
+    const onBhajanTick = () => { if (b && !handedOff.current && b.currentTime >= BHAJAN_SECONDS - 0.12) toSong(); };
     const onBhajanEnd = () => { if (!handedOff.current) toSong(); };
     b?.addEventListener("ended", onBhajanEnd);
+    b?.addEventListener("timeupdate", onBhajanTick);
     s?.addEventListener("ended", onLoop);
     s?.addEventListener("timeupdate", onTick);
 
@@ -147,6 +152,7 @@ export default function Music() {
       window.removeEventListener("shaadi:open", onOpen);
       disarm();
       b?.removeEventListener("ended", onBhajanEnd);
+      b?.removeEventListener("timeupdate", onBhajanTick);
       s?.removeEventListener("ended", onLoop);
       s?.removeEventListener("timeupdate", onTick);
       b?.pause(); s?.pause(); tanRef.current?.stop(); ctxRef.current?.close();
@@ -162,7 +168,7 @@ export default function Music() {
     setState(muted.current ? "muted" : "playing");
   };
 
-  const name = track === "bhajan" ? "Ganesh Aarti" : track === "song" ? "O Meri Laila" : "Tanpura";
+  const name = track === "bhajan" ? "Vakratunda Mahakaya" : track === "song" ? "O Meri Laila" : "Tanpura";
   const label = state === "muted" ? "Muted" : state === "playing" ? name : "Music";
   return (
     <>
