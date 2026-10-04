@@ -11,7 +11,7 @@ export const wedding = {
   groom: {
     first: "Nitish",
     full: "Nitish Anand",
-    parents: "Mr. Ashok & Mrs. Rekha Anand", // (placeholder)
+    parents: "Mr. Karunoj Kumar Sinha & Mrs. Bindu Sinha",
   },
   monogram: "A & N",
   hashtag: "#AkanchaWedsNitish",
