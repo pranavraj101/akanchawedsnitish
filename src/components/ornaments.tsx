@@ -7,23 +7,56 @@ const Svg = ({ children, className = "", vb = "0 0 64 64" }: { children: React.R
   </svg>
 );
 
-const Marigold = () => (
+const Tilak = () => (
   <Svg>
-    {Array.from({ length: 12 }, (_, i) => <path key={i} d="M32 20 C 35 13, 35 8, 32 4 C 29 8, 29 13, 32 20 Z" transform={`rotate(${i * 30} 32 32)`} />)}
-    {Array.from({ length: 12 }, (_, i) => <path key={`b${i}`} d="M32 24 C 34 20, 34 17, 32 14 C 30 17, 30 20, 32 24 Z" transform={`rotate(${i * 30 + 15} 32 32)`} />)}
-    <circle cx="32" cy="32" r="6" />
-    <circle cx="32" cy="32" r="2" fill="currentColor" />
+    <path d="M22 8 C 22 32, 25 46, 32 52 C 39 46, 42 32, 42 8" />
+    <path d="M27 10 C 27 30, 29 40, 32 44 C 35 40, 37 30, 37 10" opacity=".6" />
+    <path d="M32 22 C 34 26, 34 30, 32 33 C 30 30, 30 26, 32 22 Z" fill="currentColor" />
+    <ellipse cx="32" cy="58" rx="18" ry="3.5" />
   </Svg>
 );
 
-const Feather = () => (
+const Matka = () => (
   <Svg>
-    <path d="M32 60 C 31 46, 31 30, 32 6" />
-    <path d="M32 8 C 20 14, 16 28, 20 40 C 24 50, 30 54, 32 56 C 34 54, 40 50, 44 40 C 48 28, 44 14, 32 8 Z" />
-    <ellipse cx="32" cy="28" rx="8" ry="10" />
-    <ellipse cx="32" cy="29" rx="4" ry="5.5" />
-    <circle cx="32" cy="30" r="1.6" fill="currentColor" />
-    {[-1, 1].map((s) => [16, 24, 36, 44].map((y) => <path key={`${s}${y}`} d={`M32 ${y + 6} L ${32 + s * 10} ${y}`} opacity=".55" />))}
+    <path d="M23 22 C 11 30, 11 49, 24 55 L 40 55 C 53 49, 53 30, 41 22 Z" />
+    <path d="M23 22 C 23 18, 41 18, 41 22" />
+    <path d="M26 18 L 26 13 C 30 11, 34 11, 38 13 L 38 18" />
+    <path d="M14 36 C 24 40, 40 40, 50 36" opacity=".6" />
+    {[20, 26, 32, 38, 44].map((x) => <circle key={x} cx={x} cy={x === 32 ? 43 : 42} r="1.2" fill="currentColor" />)}
+    <path d="M6 60 C 14 57, 22 61, 32 59 C 42 57, 50 61, 58 58" opacity=".6" />
+  </Svg>
+);
+
+const Mandap = () => (
+  <Svg>
+    <path d="M10 26 C 18 14, 46 14, 54 26 Z" />
+    <path d="M32 15 V 8" /><circle cx="32" cy="6" r="2" />
+    <path d="M14 26 V 57 M50 26 V 57 M23 28 V 57 M41 28 V 57" opacity=".75" />
+    <path d="M14 31 Q 23 38 32 31 Q 41 38 50 31" opacity=".6" />
+    <path d="M32 54 C 36 50, 36 46, 32 42 C 28 46, 28 50, 32 54 Z" />
+    <path d="M8 58 H 56" />
+  </Svg>
+);
+
+const Thali = () => (
+  <Svg>
+    <ellipse cx="32" cy="42" rx="26" ry="9" />
+    <ellipse cx="32" cy="42" rx="20" ry="6" opacity=".6" />
+    <path d="M20 41 C 20 37, 27 37, 27 41 Z M37 41 C 37 37, 44 37, 44 41 Z" />
+    <path d="M28 44 C 29 39, 35 39, 36 44" />
+    <path d="M27 30 C 25 26, 29 24, 27 18 M33 30 C 31 26, 35 24, 33 18 M39 30 C 37 26, 41 24, 39 18" opacity=".55" />
+  </Svg>
+);
+
+const Doli = () => (
+  <Svg>
+    <path d="M4 22 H 60" />
+    <path d="M18 22 C 18 11, 46 11, 46 22" />
+    <path d="M32 12 V 7" /><circle cx="32" cy="5.5" r="1.6" />
+    <path d="M20 22 V 46 H 44 V 22" />
+    <path d="M20 26 Q 26 34 32 26 Q 38 34 44 26" opacity=".6" />
+    <rect x="27" y="32" width="10" height="10" rx="1" />
+    <path d="M18 46 H 46 M23 46 V 51 M32 46 V 51 M41 46 V 51" />
   </Svg>
 );
 
@@ -59,7 +92,7 @@ const Diya = () => (
   </Svg>
 );
 
-const ICONS: Record<Motif, () => React.JSX.Element> = { sun: Marigold, peacock: Feather, paisley: Paisley, fish: Kalash, kalash: Diya };
+const ICONS: Record<Motif, () => React.JSX.Element> = { tilak: Tilak, kalash: Kalash, paisley: Paisley, matka: Matka, diya: Diya, mandap: Mandap, thali: Thali, doli: Doli };
 
 export const EventIcon = ({ motif }: { motif: Motif }) => {
   const Icon = ICONS[motif];

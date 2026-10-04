@@ -1,4 +1,4 @@
-# Akansha & Nitish — Wedding Invitation
+# Akancha & Nitish — Wedding Invitation
 
 A digital shaadi card built with Next.js, in the manner of a fine printed
 invite: ivory paper, a hairline gold arch, watercolor lilies and blush roses,
@@ -41,5 +41,13 @@ Values marked `(placeholder)` are stand-ins waiting for the real ones.
 
 ## Controls
 
-Tap the seal to open. Then: tap the right or left edge of the card, swipe,
-scroll, or use the arrow keys. "O Meri Laila" starts on that tap, fades in and loops; the top-right button mutes it. The track lives at `public/audio/o-meri-laila.mp3`.
+The opening page shows Shri Ganesh. Tap anywhere (or the seal) to hear the first
+two lines of the Ganesh aarti — about eight seconds — then "O Meri Laila"
+starts from its tagline and loops. The top-right button mutes it.
+
+## Audio
+
+- `public/audio/ganesh-aarti.mp3` — first two lines of *Shri Ganesha Aarti* by
+  [Vikas Kumar](https://copyrightfreemusic.in/2022/09/shri-ganesha-aarti/),
+  [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+- `public/audio/o-meri-laila.mp3` — the background song, starting at the hook.

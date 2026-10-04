@@ -66,7 +66,8 @@ export default function Invitation() {
     const ctx = gsap.context(() => {
       gsap.from(".gpanel", { opacity: 0, duration: 1.4, ease: "power2.out" });
       gsap.from(".gseal", { scale: 0.6, opacity: 0, rotate: -12, duration: 1.4, delay: 0.6, ease: "back.out(1.6)" });
-      gsap.from(".gate-copy > *", { y: 16, opacity: 0, duration: 1.1, delay: 0.9, stagger: 0.14, ease: "power3.out" });
+      gsap.from(".gate-ganpati", { opacity: 0, scale: 0.85, y: 20, filter: "blur(8px)", duration: 2.2, delay: 0.3, ease: "expo.out", clearProps: "filter" });
+      gsap.from(".gate-copy > :not(.gate-ganpati)", { y: 16, opacity: 0, duration: 1.1, delay: 1.1, stagger: 0.14, ease: "power3.out" });
     }, rootRef);
     // the florals bloom open from their corners, softly coming into focus
     const dressing = gsap.context(() => {
@@ -262,6 +263,12 @@ export default function Invitation() {
           <div className="gpanel right"><span className="gpanel-arch" /></div>
           <div className="gate-center">
             <div className="gate-copy">
+              <div className="gate-ganpati">
+                <span className="gate-halo" aria-hidden="true" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/art/ganpati.webp" alt="Shri Ganesh" draggable={false} />
+              </div>
+              <p className="hindi gate-mantra">॥ श्री गणेशाय नमः ॥</p>
               <p className="hindi gate-hindi">शुभ विवाह</p>
               <p className="label">The wedding of</p>
               <p className="script gate-names">{wedding.bride.first} <span>&amp;</span> {wedding.groom.first}</p>

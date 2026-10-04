@@ -1,5 +1,5 @@
 /* =====================================================================
-   Akansha & Nitish — an arch of gold on ivory paper
+   Akancha & Nitish — an arch of gold on ivory paper
    Quiet and classic: watercolor lilies and blush roses, a hairline gold
    arch, script names in foil, small spaced capitals and warm taupe ink.
    Every card sits inside the same arch; the florals frame the viewport.
@@ -166,7 +166,16 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--gold); outlin
 .ev-icon { width: clamp(44px, calc(var(--u) * 15), 76px); aspect-ratio: 1; }
 .ev-hindi { font-size: clamp(1rem, calc(var(--u) * 4.2), 1.5rem); color: var(--rose); }
 .ev-title { font-size: clamp(2.4rem, calc(var(--u) * 13), 4.6rem); line-height: 1.1; text-wrap: balance; }
-.ev-date { color: var(--ink); letter-spacing: .2em; text-wrap: balance; }
+.ev-day { color: var(--gold-deep); }
+.ev-date { font-size: clamp(1.4rem, calc(var(--u) * 6.4), 2.2rem); line-height: 1.1; color: var(--ink); }
+.ev-date-hi { font-size: clamp(.95rem, calc(var(--u) * 3.8), 1.25rem); color: var(--ink-70); }
+.ceremony-wrap { display: flex; flex-direction: column; align-items: center; width: 100%; }
+.ceremony { display: flex; flex-direction: column; align-items: center; gap: calc(var(--u) * 1.4); }
+.ceremony-rule { width: 40%; height: 1px; margin-block: calc(var(--u) * 3); background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+.ev-meta-hi { font-size: clamp(.9rem, calc(var(--u) * 3.6), 1.15rem); color: var(--rose); }
+.event.pair .ev-icon { width: clamp(36px, calc(var(--u) * 11), 56px); }
+.event.pair .ev-title { font-size: clamp(2rem, calc(var(--u) * 10.5), 3.6rem); }
+.event .plx { gap: calc(var(--u) * 1.4); }
 .flourish { width: min(70%, 220px); height: auto; color: var(--gold); margin-block: calc(var(--u) * 1); }
 .ev-place { font-style: italic; font-size: clamp(1.05rem, calc(var(--u) * 4.4), 1.45rem); color: var(--ink); }
 .ev-dress .label { display: block; margin-bottom: .15rem; font-size: .6rem; color: var(--gold-deep); }
@@ -219,15 +228,20 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--gold); outlin
 
 .gate-center {
   position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: calc(var(--u) * 4); padding-bottom: 12vh; pointer-events: none; transform: translateZ(4px); text-align: center;
+  gap: calc(var(--u) * 3.2); padding-bottom: 8vh; pointer-events: none; transform: translateZ(4px); text-align: center;
 }
 .gate-copy { display: flex; flex-direction: column; align-items: center; gap: .4rem; }
 .gate-copy p { margin: 0; }
-.gate-hindi { font-size: clamp(1rem, calc(var(--u) * 4.4), 1.5rem); color: var(--rose); }
-.gate-names { font-size: clamp(2.4rem, calc(var(--u) * 12), 4.4rem); }
+.gate-ganpati { position: relative; width: min(calc(var(--u) * 40), 26vh); aspect-ratio: 3 / 4; margin-bottom: calc(var(--u) * 0.4); }
+.gate-ganpati img { position: relative; width: 100%; height: 100%; display: block; animation: drift-up 6s ease-in-out infinite alternate; }
+.gate-halo { position: absolute; inset: -14%; border-radius: 50%; background: radial-gradient(circle, rgba(255, 226, 160, .7), rgba(255, 226, 160, .25) 45%, transparent 70%); animation: halo 4s ease-in-out infinite; }
+@keyframes halo { 0%, 100% { opacity: .55; scale: .94; } 50% { opacity: 1; scale: 1.04; } }
+.gate-mantra { font-size: clamp(.95rem, calc(var(--u) * 4), 1.35rem); color: #b4532a; letter-spacing: .03em; }
+.gate-hindi { font-size: clamp(.9rem, calc(var(--u) * 3.6), 1.25rem); color: var(--rose); }
+.gate-names { font-size: clamp(2.2rem, min(calc(var(--u) * 11), 7vh), 4.2rem); }
 .gate-names span, .script .amp { font-family: var(--display); font-style: italic; font-size: .5em; vertical-align: .25em; padding-inline: .15em; }
 .gseal {
-  position: relative; width: clamp(110px, calc(var(--u) * 34), 170px); aspect-ratio: 1; border-radius: 50%;
+  position: relative; width: clamp(96px, min(calc(var(--u) * 28), 16vh), 150px); aspect-ratio: 1; border-radius: 50%;
   display: grid; place-items: center; pointer-events: auto;
   filter: drop-shadow(0 10px 16px rgba(111, 52, 56, .35));
   transition: transform .5s cubic-bezier(.2, .8, .2, 1);
@@ -329,6 +343,7 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--gold); outlin
 .couple-lg { height: 40vh; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .gate-ganpati img, .gate-halo,
   .script, .gseal, .gate-hint, .flora-corner, .flora-bottom, .sound.on .bars i, .spark, .bokeh i, .couple, .gseal-ring, .gseal-ring::after, .orn .flame { animation: none; }
   .spark { opacity: .8; }
 }

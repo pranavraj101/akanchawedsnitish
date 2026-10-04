@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { wedding, calendarLink, mapsLink } from "@/data/wedding";
+import { wedding, calendarLink, mapsLink, type WeddingEvent } from "@/data/wedding";
 import { EventIcon, Calendar, Pin, Flourish, Spark } from "@/components/ornaments";
 import Countdown from "@/components/Countdown";
 
@@ -16,6 +16,30 @@ const Card = ({ children, className = "", depth = 0.03 }: { children: ReactNode;
 const Amp = ({ text }: { text: string }) => {
   const [a, b] = text.split(" & ");
   return b === undefined ? <>{text}</> : <>{a} <span className="amp">&amp;</span> {b}</>;
+};
+
+const at = (iso: string) => new Date(`${iso}T12:00:00+05:30`);
+const fmt = (iso: string, locale: string, o: Intl.DateTimeFormatOptions) => at(iso).toLocaleDateString(locale, { timeZone: "Asia/Kolkata", ...o });
+
+/** One ceremony on a day card. Optional time and place appear only when known. */
+const Ceremony = ({ ev }: { ev: WeddingEvent }) => {
+  const time = "time" in ev ? ev.time : undefined;
+  const timeHindi = "timeHindi" in ev ? ev.timeHindi : undefined;
+  const place = "place" in ev ? ev.place : undefined;
+  const placeHindi = "placeHindi" in ev ? ev.placeHindi : undefined;
+  const note = "note" in ev ? ev.note : undefined;
+  const meta = [timeHindi ?? time, placeHindi].filter(Boolean).join(" · ");
+  const metaEn = [time, place].filter(Boolean).join(" · ");
+  return (
+    <div className="ceremony">
+      <div className="ev-icon" data-in><EventIcon motif={ev.motif} /></div>
+      <p className="hindi ev-hindi" data-in>{ev.hindi}</p>
+      <h2 className="script ev-title name" data-in><Amp text={ev.title} /></h2>
+      {meta ? <p className="hindi ev-meta-hi" data-in>{meta}</p> : null}
+      {metaEn ? <p className="ev-place" data-in>{metaEn}</p> : null}
+      {note ? <p className="ev-note" data-in>{note}</p> : null}
+    </div>
+  );
 };
 
 const Couple = ({ size = "lg" }: { size?: "lg" | "sm" }) => (
@@ -47,7 +71,7 @@ export function buildScenes(): Scene[] {
     key: "hero", label: "Shubh Vivah",
     node: (
       <Card className="hero">
-        <p className="hindi ganesh" data-in>॥ श्री गणेशाय नमः ॥</p>
+        <p className="hindi ganesh" data-in>शुभ विवाह</p>
         <p className="label" data-in>Together with their families</p>
         <Couple />
         <h1 className="names" data-in>
@@ -76,20 +100,28 @@ export function buildScenes(): Scene[] {
     ),
   });
 
-  w.events.forEach((ev, i) => {
-    const note = "note" in ev ? ev.note : undefined;
+  const days: { date: string; events: WeddingEvent[] }[] = [];
+  w.events.forEach((ev) => {
+    const last = days[days.length - 1];
+    if (last && last.date === ev.date) last.events.push(ev);
+    else days.push({ date: ev.date, events: [ev] });
+  });
+
+  days.forEach((day, i) => {
     scenes.push({
-      key: `ev-${i}`, label: ev.title,
+      key: `ev-${i}`, label: day.events.map((e) => e.title).join(" · "),
       node: (
-        <Card className="event">
-          <div className="ev-icon" data-in><EventIcon motif={ev.motif} /></div>
-          <p className="hindi ev-hindi" data-in>{ev.hindi}</p>
-          <h2 className="script ev-title name" data-in><Amp text={ev.title} /></h2>
-          <p className="label ev-date" data-in>{ev.day} {ev.monthLong} · {ev.meta}</p>
+        <Card className={`event ${day.events.length > 1 ? "pair" : ""}`}>
+          <p className="label ev-day" data-in>{fmt(day.date, "en-IN", { weekday: "long" })}</p>
+          <p className="ev-date" data-in>{fmt(day.date, "en-IN", { day: "numeric", month: "long", year: "numeric" })}</p>
+          <p className="hindi ev-date-hi" data-in>{fmt(day.date, "hi-IN", { day: "numeric", month: "long", year: "numeric" })}</p>
           <Flourish />
-          <p className="ev-place" data-in>{ev.place}</p>
-          <p className="body ev-dress" data-in><span className="label">Attire</span>{ev.dress}</p>
-          {note ? <p className="ev-note" data-in>{note}</p> : null}
+          {day.events.map((ev, k) => (
+            <div className="ceremony-wrap" key={ev.title}>
+              {k > 0 ? <span className="ceremony-rule" aria-hidden="true" /> : null}
+              <Ceremony ev={ev} />
+            </div>
+          ))}
         </Card>
       ),
     });
@@ -101,6 +133,7 @@ export function buildScenes(): Scene[] {
       <Card className="venue">
         <div className="ev-icon" data-in><Pin /></div>
         <p className="label" data-in>The venue</p>
+        <p className="hindi ev-hindi" data-in>{w.venue.nameHindi}</p>
         <h2 className="venue-name" data-in>{w.venue.name}</h2>
         <p className="body" data-in>{w.venue.addressLines.map((l, i) => <span key={i}>{l}<br /></span>)}</p>
         <div className="links" data-in>
@@ -108,7 +141,6 @@ export function buildScenes(): Scene[] {
           <a className="pill" href={calendarLink()} target="_blank" rel="noopener">Save the Date</a>
         </div>
         <Flourish />
-        <p className="ev-note" data-in>{w.venue.travelNote}</p>
         <p className="ev-note" data-in>{w.venue.stayNote}</p>
       </Card>
     ),

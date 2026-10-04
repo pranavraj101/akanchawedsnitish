@@ -1,8 +1,8 @@
 {
-  "name": "akansha-weds-nitish",
+  "name": "akancha-weds-nitish",
   "version": "1.0.0",
   "private": true,
-  "description": "Wedding invitation for Akansha & Nitish Anand — 4 December 2026, Begusarai",
+  "description": "Wedding invitation for Akancha & Nitish Anand — 4 December 2026, Begusarai",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

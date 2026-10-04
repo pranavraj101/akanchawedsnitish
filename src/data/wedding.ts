@@ -5,7 +5,7 @@
 
 export const wedding = {
   bride: {
-    first: "Akansha",
+    first: "Akancha",
     parents: "Mr. Prakash Chandra & Mrs. Punam Sinha",
   },
   groom: {
@@ -14,7 +14,7 @@ export const wedding = {
     parents: "Mr. Ashok & Mrs. Rekha Anand", // (placeholder)
   },
   monogram: "A & N",
-  hashtag: "#AkanshaWedsNitish",
+  hashtag: "#AkanchaWedsNitish",
 
   // The main day
   date: {
@@ -29,74 +29,28 @@ export const wedding = {
   },
 
   venue: {
-    name: "Ganga Vatika Marriage Garden", // (placeholder)
-    addressLines: ["Kapasiya Chowk, NH-31", "Begusarai, Bihar 851101"], // (placeholder)
+    name: "Parinay Garden",
+    nameHindi: "परिणय गार्डन",
+    addressLines: ["Begusarai, Bihar"],
     city: "Begusarai, Bihar",
-    mapsQuery: "Ganga Vatika Marriage Garden Begusarai Bihar",
-    travelNote:
-      "Begusarai Junction is ten minutes from the venue. Patna airport is about three hours by road — we'll have cars waiting for outstation guests on 2 and 3 December.",
+    mapsQuery: "Parinay Garden Begusarai Bihar",
     stayNote: "Rooms for outstation guests are arranged nearby from 1 to 6 December.",
   },
 
-  // Order matters: this is the sequence of the celebrations.
+  // Order matters: this is the sequence of the celebrations. Events sharing a
+  // date are shown together on one card. time / place are optional.
   events: [
+    { date: "2026-12-01", hindi: "तिलक", title: "Tilak", motif: "tilak" },
+    { date: "2026-12-01", hindi: "शगुन", title: "Shagun", motif: "kalash" },
+    { date: "2026-12-02", hindi: "हल्दी एवं मेंहदी", title: "Haldi & Mehendi", motif: "paisley", place: "At the residence", placeHindi: "निवास स्थल" },
     {
-      day: "02",
-      month: "Dec",
-      monthLong: "December",
-      hindi: "हल्दी एवं मटकोर",
-      note: "Matkor — the Bihari ritual where the women of the house fetch sacred earth for the mandap.",
-      title: "Haldi & Matkor",
-      motif: "sun",
-      meta: "Wednesday · 10:00 AM",
-      place: "The Courtyard, Ganga Vatika",
-      dress: "Yellows & whites you won't mind getting turmeric on",
+      date: "2026-12-02", hindi: "मटकोर", title: "Matkor", motif: "matka",
+      note: "The Bihari ritual where the women of the house fetch sacred earth for the mandap.",
     },
-    {
-      day: "02",
-      month: "Dec",
-      monthLong: "December",
-      hindi: "संगीत",
-      title: "Sangeet",
-      motif: "peacock",
-      meta: "Wednesday · 7:00 PM till the dhol gives up",
-      place: "Main Lawn",
-      dress: "Glam — sequins strongly encouraged",
-    },
-    {
-      day: "03",
-      month: "Dec",
-      monthLong: "December",
-      hindi: "मेहंदी",
-      title: "Mehendi",
-      motif: "paisley",
-      meta: "Thursday · 11:00 AM onwards",
-      place: "Poolside Pavilion",
-      dress: "Greens, florals & anything that catches the sun",
-    },
-    {
-      day: "04",
-      month: "Dec",
-      monthLong: "December",
-      hindi: "बारात एवं विवाह",
-      title: "Baraat & Vivah",
-      motif: "fish",
-      meta: "Friday · Baraat at 6:00 PM · Pheras at 8:45 PM",
-      place: "The Mandap, Main Lawn",
-      dress: "Traditional, in your richest colours. December nights in Begusarai are cold — carry a shawl.",
-      main: true,
-    },
-    {
-      day: "05",
-      month: "Dec",
-      monthLong: "December",
-      hindi: "स्वागत समारोह",
-      title: "Reception",
-      motif: "kalash",
-      meta: "Saturday · 7:30 PM",
-      place: "Banquet Hall",
-      dress: "Cocktail or Indo-western",
-    },
+    { date: "2026-12-03", hindi: "घृतढारी", title: "Ghritdhari", motif: "diya" },
+    { date: "2026-12-04", hindi: "शुभ विवाह रात्रि", title: "Shubh Vivah", motif: "mandap", time: "Night", timeHindi: "रात्रि", place: "Parinay Garden, Begusarai", placeHindi: "परिणय गार्डन, बेगूसराय" },
+    { date: "2026-12-04", hindi: "प्रीती भोज", title: "Preeti Bhoj", motif: "thali", time: "7:00 PM", timeHindi: "संध्या सात बजे" },
+    { date: "2026-12-05", hindi: "विदाई", title: "Vidaai", motif: "doli", time: "7:00 AM", timeHindi: "सुबह सात बजे" },
   ],
 } as const;
 
