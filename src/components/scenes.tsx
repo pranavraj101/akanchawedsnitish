@@ -1,14 +1,25 @@
 import type { ReactNode } from "react";
 import { wedding, calendarLink, mapsLink, type WeddingEvent } from "@/data/wedding";
 import { EventIcon, Calendar, Pin, Flourish, Spark } from "@/components/ornaments";
-import Countdown from "@/components/Countdown";
 
 export type Scene = { key: string; label: string; node: ReactNode };
 
 /** Content sitting inside the arch. depth drives the pointer parallax. */
-const Card = ({ children, className = "", depth = 0.03 }: { children: ReactNode; className?: string; depth?: number }) => (
+const Card = ({ children, className = "", depth = 0.03, overlay }: { children: ReactNode; className?: string; depth?: number; overlay?: ReactNode }) => (
   <div className={`copy ${className}`} data-depth={depth}>
+    {overlay}
     <div className="plx">{children}</div>
+  </div>
+);
+
+const EventFill = ({ iso }: { iso: string }) => (
+  <div className="event-fill" aria-hidden="true">
+    <span className="event-wash" />
+    <span className="event-num">{fmt(iso, "en-IN", { day: "2-digit" })}</span>
+    {/* eslint-disable-next-line @next/next/no-img-element */}
+    <img className="event-flora event-flora-l" src="/art/florals-left.webp" alt="" draggable={false} />
+    {/* eslint-disable-next-line @next/next/no-img-element */}
+    <img className="event-flora event-flora-r" src="/art/florals-right.webp" alt="" draggable={false} />
   </div>
 );
 
@@ -44,7 +55,7 @@ const Ceremony = ({ ev }: { ev: WeddingEvent }) => {
 
 const Couple = ({ size = "lg" }: { size?: "lg" | "sm" }) => (
   // eslint-disable-next-line @next/next/no-img-element
-  <img className={`couple couple-${size}`} src="/art/couple.webp" alt={`Illustration of ${wedding.bride.first} and ${wedding.groom.first}`} data-in draggable={false} />
+  <img className={`couple couple-${size}`} src="/art/couple.webp?v=maroon2" alt={`Illustration of ${wedding.bride.first} and ${wedding.groom.first}`} data-in draggable={false} />
 );
 
 const DateVenue = () => (
@@ -91,7 +102,7 @@ export function buildScenes(): Scene[] {
       <Card className="invite">
         <p className="hindi shlok" data-in>मंगलम् भगवान् विष्णुः, मंगलम् गरुड़ध्वजः</p>
         <p className="body" data-in>With the blessings of our elders<br /><strong>{w.bride.parents}</strong><br />request the honour of your presence at the wedding of their daughter</p>
-        <p className="script invite-name name" data-in>{w.bride.first}</p>
+        <p className="script invite-name name" data-in>{w.bride.full}</p>
         <p className="and" data-in>with</p>
         <p className="script invite-name name" data-in>{w.groom.full}</p>
         <p className="body" data-in>son of <strong>{w.groom.parents}</strong></p>
@@ -111,7 +122,7 @@ export function buildScenes(): Scene[] {
     scenes.push({
       key: `ev-${i}`, label: day.events.map((e) => e.title).join(" · "),
       node: (
-        <Card className={`event ${day.events.length > 1 ? "pair" : ""}`}>
+        <Card className={`event ${day.events.length > 1 ? "pair" : ""}`} overlay={<EventFill iso={day.date} />}>
           <p className="label ev-day" data-in>{fmt(day.date, "en-IN", { weekday: "long" })}</p>
           <p className="ev-date" data-in>{fmt(day.date, "en-IN", { day: "numeric", month: "long", year: "numeric" })}</p>
           <p className="hindi ev-date-hi" data-in>{fmt(day.date, "hi-IN", { day: "numeric", month: "long", year: "numeric" })}</p>
@@ -141,19 +152,16 @@ export function buildScenes(): Scene[] {
           <a className="pill" href={calendarLink()} target="_blank" rel="noopener">Save the Date</a>
         </div>
         <Flourish />
-        <p className="ev-note" data-in>{w.venue.stayNote}</p>
       </Card>
     ),
   });
 
   scenes.push({
-    key: "closing", label: "Countdown",
+    key: "closing", label: "With love",
     node: (
       <Card className="closing">
         <Couple size="sm" />
-        <p className="label" data-in>The pheras begin in</p>
-        <div data-in><Countdown targetISO={w.date.muhuratISO} /></div>
-        <p className="ev-note" data-in>Vivah muhurat · {w.date.longForm} · {w.date.muhuratLabel}</p>
+        <p className="hindi ganesh" data-in>शुभ विवाह</p>
         <div className="closing-wrap">
           <p className="script closing-line name" data-in>We can&apos;t wait to celebrate with you</p>
           <Spark className="s1" /><Spark className="s3" />

@@ -1,19 +1,19 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-const SONG = "/audio/o-meri-laila.mp3";
+const SONG = "/audio/jab-tak-hai-jaan.mp3?v=5";
 // Suresh Wadkar — Vakratunda Mahakaya, 7s–22s only
 const BHAJAN = "/audio/vakratunda.mp3?v=22";
-/** That 15-second stretch, then Laila. Never play past it. */
+/** That 15-second stretch, then Jab Tak Hai Jaan. Never play past it. */
 const BHAJAN_SECONDS = 15;
-/** Official cut: start at 1:13. */
-const SONG_START = 73;
+/** Official cut: start at 0:05 — first para, not the second. */
+const SONG_START = 5;
 
 /**
  * Background music. Fifteen seconds of Vakratunda Mahakaya (7s–22s of the
  * Suresh Wadkar recording) play on the opening page — from the first tap if
- * the browser holds sound back — then it crossfades into "O Meri Laila" from
- * 1:13 through to the end, looping from that same start. The top-right
+ * the browser holds sound back — then it crossfades into "Jab Tak Hai Jaan"
+ * from 0:05 through to the end, looping from that same start. The top-right
  * button mutes it. If the song's MP3 can't play, the tanpura synth below
  * takes over so the film never plays silent.
  */
@@ -168,7 +168,7 @@ export default function Music() {
     setState(muted.current ? "muted" : "playing");
   };
 
-  const name = track === "bhajan" ? "Vakratunda Mahakaya" : track === "song" ? "O Meri Laila" : "Tanpura";
+  const name = track === "bhajan" ? "Vakratunda Mahakaya" : track === "song" ? "Jab Tak Hai Jaan" : "Tanpura";
   const label = state === "muted" ? "Muted" : state === "playing" ? name : "Music";
   return (
     <>

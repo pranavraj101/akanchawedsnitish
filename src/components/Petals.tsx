@@ -5,7 +5,7 @@ import * as THREE from "three";
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
 
-/** Draws a soft white petal; instances tint it blush, peach and ivory. */
+/** Draws a soft white petal; instances tint it gold, blush and maroon. */
 function petalTexture(): THREE.Texture {
   const c = document.createElement("canvas");
   c.width = 128;
@@ -77,7 +77,7 @@ export default function Petals() {
     const mat = new THREE.MeshBasicMaterial({ map: petalTexture(), transparent: true, opacity: 0.85, side: THREE.DoubleSide, depthWrite: false });
     const mesh = new THREE.InstancedMesh(geo, mat, COUNT);
     const dummy = new THREE.Object3D();
-    const palette = ["#f2c4c0", "#e8a9a6", "#f7d9c4", "#fff6ef", "#eab8a8", "#f4d6d2"].map((h) => new THREE.Color(h));
+    const palette = ["#e8c98a", "#d4af60", "#c4787a", "#e8b4a8", "#f0d9a8", "#a33c4a"].map((h) => new THREE.Color(h));
     const petals: Petal[] = [];
     for (let i = 0; i < COUNT; i++) {
       petals.push({

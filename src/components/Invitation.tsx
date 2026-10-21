@@ -6,7 +6,7 @@ import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { wedding } from "@/data/wedding";
 import { buildScenes } from "@/components/scenes";
 import Music from "@/components/Music";
-import { Spark } from "@/components/ornaments";
+import { Spark, Jhumar } from "@/components/ornaments";
 
 const SCENE_SECONDS = 9;
 const gust = () => window.dispatchEvent(new Event("shaadi:gust"));
@@ -35,7 +35,7 @@ const BOKEH: [number, number, number, number][] = [
 ];
 
 /**
- * The film. An ivory gatefold sealed with wax opens onto a gold arch; inside
+ * The film. A maroon gatefold sealed with wax opens onto a gold arch; inside
  * it the invitation plays card by card like a video invite: each one
  * auto-advances, drifts gently under the pointer and dissolves into the next.
  * Tap, swipe, scroll or use the arrows to take control. No forms anywhere.
@@ -69,7 +69,6 @@ export default function Invitation() {
       gsap.from(".gate-ganpati", { opacity: 0, scale: 0.85, y: 20, filter: "blur(8px)", duration: 2.2, delay: 0.3, ease: "expo.out", clearProps: "filter" });
       gsap.from(".gate-copy > :not(.gate-ganpati)", { y: 16, opacity: 0, duration: 1.1, delay: 1.1, stagger: 0.14, ease: "power3.out" });
     }, rootRef);
-    // the florals bloom open from their corners, softly coming into focus
     const dressing = gsap.context(() => {
       const bloom = { opacity: 0, scale: 0.55, filter: "blur(10px)", duration: 2.8, ease: "expo.out", clearProps: "filter" };
       gsap.from(".flora-bottom.left", { ...bloom, rotation: -14, transformOrigin: "0% 100%" });
@@ -140,7 +139,8 @@ export default function Invitation() {
       .to(".sweep", { opacity: 0, duration: 0.4 }, at + 1.2);
     tl.to(".flora-bottom.left", { rotation: 2.5, duration: 0.7, ease: "sine.out", yoyo: true, repeat: 1 }, at)
       .to(".flora-bottom.right", { rotation: -2.5, duration: 0.7, ease: "sine.out", yoyo: true, repeat: 1 }, at + 0.08)
-      .to(".flora-corner", { rotation: -2, duration: 0.8, ease: "sine.out", yoyo: true, repeat: 1 }, at + 0.15);
+      .to(".flora-corner", { rotation: -2, duration: 0.8, ease: "sine.out", yoyo: true, repeat: 1 }, at + 0.15)
+      .to(".jhumar", { rotation: 3, duration: 0.8, ease: "sine.out", yoyo: true, repeat: 1 }, at);
   };
 
   /* ---------- open the gates ---------- */
@@ -247,6 +247,12 @@ export default function Invitation() {
         <div className="arch" aria-hidden="true">
           <div className="arch-inner" />
           {STARS.map(([x, y, s, d], i) => <Spark key={i} style={{ left: `${x}%`, top: `${y}%`, width: s, animationDelay: `${d}s` }} />)}
+        </div>
+        <div className="jhumars" aria-hidden="true">
+          <Jhumar className="jhumar-a" />
+          <Jhumar className="jhumar-b" />
+          <Jhumar className="jhumar-c" />
+          <Jhumar className="jhumar-d" />
         </div>
         {scenes.map((s, i) => (
           <section className={`scene scene-${s.key} ${i === index ? "is-current" : ""}`} key={s.key} ref={(el) => { sceneRefs.current[i] = el; }} aria-hidden={i !== index}>

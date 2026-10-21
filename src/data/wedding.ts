@@ -6,12 +6,13 @@
 export const wedding = {
   bride: {
     first: "Akancha",
+    full: "Akancha Rani",
     parents: "Mr. Prakash Chandra & Mrs. Punam Sinha",
   },
   groom: {
     first: "Nitish",
     full: "Nitish Anand",
-    parents: "Mr. Karunoj Kumar Sinha & Mrs. Bindu Sinha",
+    parents: "Mr. Karun Kumar Sinha & Mrs. Bindu Sinha",
   },
   monogram: "A & N",
   hashtag: "#AkanchaWedsNitish",
@@ -34,7 +35,6 @@ export const wedding = {
     addressLines: ["Begusarai, Bihar"],
     city: "Begusarai, Bihar",
     mapsQuery: "Parinay Garden Begusarai Bihar",
-    stayNote: "Rooms for outstation guests are arranged nearby from 1 to 6 December.",
   },
 
   // Order matters: this is the sequence of the celebrations. Events sharing a

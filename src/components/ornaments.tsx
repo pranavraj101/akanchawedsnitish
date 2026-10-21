@@ -124,6 +124,30 @@ export const Flourish = () => (
   </Svg>
 );
 
+/** A hanging shaadi jhumar: gold chain, chhatri, and a lit diya. */
+export const Jhumar = ({ className = "" }: { className?: string }) => (
+  <svg viewBox="0 0 90 260" className={`jhumar ${className}`} aria-hidden="true">
+    <path className="jh-line" d="M45 0 V 78" />
+    {[12, 28, 44, 60].map((y) => (
+      <ellipse key={y} className="jh-ring" cx="45" cy={y} rx="5.5" ry="4" />
+    ))}
+    <path className="jh-line" d="M45 78 V 86" />
+    <circle className="jh-fill" cx="45" cy="84" r="3.2" />
+    <path className="jh-fill" d="M16 108 C 24 92, 66 92, 74 108 L 45 98 Z" />
+    <path className="jh-line" d="M16 108 Q 45 118 74 108" />
+    <path className="jh-line" d="M24 108 V 128 M45 108 V 122 M66 108 V 128" />
+    <circle className="jh-fill" cx="24" cy="132" r="2.6" />
+    <circle className="jh-fill" cx="66" cy="132" r="2.6" />
+    <path className="jh-bowl" d="M26 168 C 28 186, 36 194, 45 194 C 54 194, 62 186, 64 168 L 56 168 C 54 178, 36 178, 34 168 Z" />
+    <path className="jh-line" d="M26 168 C 34 160, 56 160, 64 168" />
+    <path className="jh-line" d="M45 122 V 158" />
+    <circle className="jh-fill" cx="45" cy="158" r="3" />
+    <path className="flame" d="M45 138 C 52 150, 52 160, 45 166 C 38 160, 38 150, 45 138 Z" />
+    <path className="flame-inner" d="M45 148 C 49 155, 49 160, 45 164 C 41 160, 41 155, 45 148 Z" />
+    <ellipse className="jh-glow" cx="45" cy="154" rx="16" ry="12" />
+  </svg>
+);
+
 /** A four-pointed gold glint that twinkles in place. */
 export function Spark({ style, className = "" }: { style?: React.CSSProperties; className?: string }) {
   return (
